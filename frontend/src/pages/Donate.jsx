@@ -21,7 +21,7 @@ const Donate = () => {
   e.preventDefault();
 
   try {
-    const response = await axios.post("http://localhost:5000/api/donations/create-checkout-session", {
+    const response = await axios.post("https://p-masemola.vercel.app/api/donations/create-checkout-session", {
       amount: Number(formData.amount),
       name: formData.name,
       email: formData.email,

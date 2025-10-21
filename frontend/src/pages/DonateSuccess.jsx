@@ -15,7 +15,7 @@ const DonateSuccess = () => {
       try {
         if (!sessionId) return;
         const res = await axios.get(
-          `http://localhost:5000/api/donations/checkout-session?sessionId=${sessionId}`
+          `https://p-masemola.vercel.app/api/donations/checkout-session?sessionId=${sessionId}`
         );
         setSession(res.data);
       } catch (error) {
