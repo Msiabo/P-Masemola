@@ -3,7 +3,7 @@ import { Mail, Phone, Facebook, Twitter, Instagram } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Header = () => {
-  const primaryColor = "#1AA1B3"; // P Masemola Foundation color
+  const primaryColor = "#1AA1B3"; 
 
   return (
     <header className="w-full bg-[#1AA1B3] text-white text-sm py-2 px-6 flex flex-col md:flex-row items-center justify-between shadow-sm">
