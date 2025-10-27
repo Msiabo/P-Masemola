@@ -19,6 +19,7 @@
     "express": "^5.1.0",
     "firebase": "^12.4.0",
     "firebase-admin": "^13.5.0",
+    "micro": "^10.0.1",
     "nodemon": "^3.1.10",
     "stripe": "^19.1.0"
   }
