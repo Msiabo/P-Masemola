@@ -1,73 +1,79 @@
 import React from "react";
 import { Mail, Phone, Facebook, Twitter, Instagram } from "lucide-react";
 import BackToTop from "./BackToTop";
+import { motion } from "framer-motion";
 
 const Footer = () => {
   return (
     <footer className="w-full bg-gradient-to-t from-[#1AA1B3] via-[#148997] to-[#1AA1B3] text-white py-16 relative">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Contact Info */}
-        <div className="space-y-4">
+        <motion.div
+          className="space-y-4"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <h3 className="text-xl font-bold text-[#F5B800]">Contact Us</h3>
           <p className="flex items-center space-x-2">
-            <Mail size={16} /> <span>info@pmasemolafoundation.org</span>
+            <Mail size={16} /> <span>pmasemolafoundation@gmail.com</span>
           </p>
           <p className="flex items-center space-x-2">
-            <Phone size={16} /> <span>+27 71 234 5678</span>
+            <Phone size={16} /> <span>+27 66 295 0540</span>
           </p>
-          <div className="flex space-x-4 mt-2">
-            {[Facebook, Twitter, Instagram].map((Icon, i) => (
+
+          {/* Social Links (same as header) */}
+          <div className="flex space-x-4 mt-4">
+            {[
+              {
+                icon: <Facebook size={20} />,
+                href: "https://www.facebook.com/profile.php?id=100095305279324",
+              },
+              {
+                icon: <Twitter size={20} />,
+                href: "https://x.com/PMasemola59251",
+              },
+              {
+                icon: <Instagram size={20} />,
+                href: "https://www.instagram.com/", // add your Instagram link here
+              },
+            ].map((item, i) => (
               <a
                 key={i}
-                href="#"
+                href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-[#F5B800] transition-all transform hover:scale-110"
               >
-                <Icon size={20} />
+                {item.icon}
               </a>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Quick Links */}
-        <div className="space-y-4">
+        <motion.div
+          className="space-y-4"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <h3 className="text-xl font-bold text-[#F5B800]">Quick Links</h3>
           <ul className="space-y-2">
-            {["Home", "About", "Projects", "Get Involved", "Contact"].map((link) => (
-              <li key={link}>
-                <a
-                  href={`#${link.toLowerCase().replace(" ", "-")}`}
-                  className="hover:text-[#F5B800] transition-all duration-200"
-                >
-                  {link}
-                </a>
-              </li>
-            ))}
+            {["Home", "About", "Projects", "Get Involved", "Contact"].map(
+              (link) => (
+                <li key={link}>
+                  <a
+                    href={`#${link.toLowerCase().replace(" ", "-")}`}
+                    className="hover:text-[#F5B800] transition-all duration-200"
+                  >
+                    {link}
+                  </a>
+                </li>
+              )
+            )}
           </ul>
-        </div>
-
-        {/* Newsletter / Message */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-[#F5B800]">Stay Connected</h3>
-          <p>
-            Subscribe to receive the latest updates on our projects, events, and
-            community programs.
-          </p>
-          <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-4 py-3 flex-1 rounded-full bg-white text-gray-800 shadow-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#F5B800] transition-all"
-            />
-            <button
-              type="submit"
-              className="px-6 py-3 rounded-full bg-[#F5B800] text-[#1AA1B3] font-semibold shadow-md hover:bg-[#e5aa00] transition-all duration-200"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
+        </motion.div>
       </div>
 
       {/* Back to Top Button */}

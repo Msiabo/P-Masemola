@@ -17,13 +17,13 @@ const Header = () => {
         <div className="flex items-center space-x-1">
           <Mail size={14} className="text-white" />
           <span className="hover:text-white cursor-pointer transition-colors">
-            info@pmasemola.org
+            pmasemolafoundation@gmail.com
           </span>
         </div>
         <div className="hidden md:flex items-center space-x-1">
           <Phone size={14} className="text-white" />
           <span className="hover:text-white cursor-pointer transition-colors">
-            +27 71 234 5678
+            +27 66 295 0540
           </span>
         </div>
       </motion.div>
