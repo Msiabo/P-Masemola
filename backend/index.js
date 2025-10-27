@@ -9,6 +9,8 @@ const webhookRoutes = require("./routes/webhook");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+console.log("🔥 Starting server...");
+
 // CORS
 app.use(cors({
   origin: ["http://localhost:5173", "https://p-masemola-gep5.vercel.app"],
@@ -20,6 +22,7 @@ app.use(cors({
 // Body parser for all routes **except Stripe webhook**
 app.use((req, res, next) => {
   if (req.originalUrl === "/api/webhook/stripe-webhook") {
+    console.log("Skipping JSON parser for Stripe webhook");
     next(); // skip parsing
   } else {
     express.json()(req, res, next);
@@ -41,4 +44,10 @@ app.post(
 // Test route
 app.get("/", (req, res) => res.send("Backend running ✅"));
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Catch-all for errors
+app.use((err, req, res, next) => {
+  console.error("❌ Server error:", err);
+  res.status(500).json({ error: err.message });
+});
+
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
