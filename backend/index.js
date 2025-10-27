@@ -21,7 +21,7 @@ app.use(cors({
 
 // Body parser for all routes **except Stripe webhook**
 app.use((req, res, next) => {
-  if (req.originalUrl === "/api/webhook/stripe-webhook") {
+  if (req.originalUrl === "/api/webhook/webhook") {
     console.log("Skipping JSON parser for Stripe webhook");
     next(); // skip parsing
   } else {
