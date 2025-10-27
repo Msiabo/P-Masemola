@@ -1,46 +1,44 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
-const donationRoutes = require("../routes/donationRoutes");
-const webhookRoutes = require("../routes/webhook");
-const serverless = require("serverless-http");
+const donationRoutes = require("./routes/donationRoutes");
+const webhookRoutes = require("./routes/webhook");
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = [
-  "https://p-masemola-gep5.vercel.app",
-  "http://localhost:5173",
-];
+// CORS
+app.use(cors({
+  origin: ["http://localhost:5173", "https://p-masemola-gep5.vercel.app"],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+}));
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      console.warn("Blocked by CORS:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    },
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
+// Body parser for all routes **except Stripe webhook**
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/webhook/stripe-webhook") {
+    next(); // skip parsing
+  } else {
+    express.json()(req, res, next);
+  }
+});
+
+app.use(express.urlencoded({ extended: true }));
+
+// Donation routes
+app.use("/api/donations", donationRoutes);
+
+// Stripe webhook route (raw body required)
+app.post(
+  "/api/webhook/stripe-webhook",
+  express.raw({ type: "application/json" }),
+  webhookRoutes
 );
-
-// Preflight
-app.options("*", cors());
-
-// Middlewares
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Test route
 app.get("/", (req, res) => res.send("Backend running ✅"));
 
-// Routes
-app.use("/donations", donationRoutes);
-app.use("/webhook", webhookRoutes);
-
-// Export for Vercel serverless
-module.exports = app;
-module.exports.handler = serverless(app);
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

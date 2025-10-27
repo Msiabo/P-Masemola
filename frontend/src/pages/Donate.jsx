@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { HeartHandshake, HandCoins, Gift } from "lucide-react";
 import axios from "axios";
 
 const Donate = () => {
@@ -18,22 +17,35 @@ const Donate = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-  try {
-    const response = await axios.post("https://p-masemola.vercel.app/api/donations/create-checkout-session", {
-      amount: Number(formData.amount),
-      name: formData.name,
-      email: formData.email,
-    });
+    try {
+      if (!formData.amount || Number(formData.amount) <= 0) {
+        setError("Please enter a valid donation amount.");
+        setLoading(false);
+        return;
+      }
 
-    // Redirect user to Stripe Checkout
-    window.location.href = response.data.url;
-  } catch (err) {
-    console.error("Error creating checkout session:", err);
-    alert("Failed to start payment. Please try again.");
-  }
-};
+      const response = await axios.post(
+        "https://p-masemola.vercel.app/api/donations/create-checkout-session",
+        {
+          amount: Number(formData.amount),
+          name: formData.name,
+          email: formData.email,
+        }
+      );
+
+      // Redirect user to Stripe Checkout
+      window.location.href = response.data.url;
+    } catch (err) {
+      console.error("Error creating checkout session:", err);
+      setError("Failed to start payment. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white text-gray-800 overflow-hidden">
@@ -100,11 +112,13 @@ const Donate = () => {
               onChange={handleChange}
               placeholder="Your name"
               className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#1AA1B3]"
-              required
             />
           </div>
+
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Email</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -112,9 +126,9 @@ const Donate = () => {
               onChange={handleChange}
               placeholder="you@example.com"
               className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#1AA1B3]"
-              required
             />
           </div>
+
           <div>
             <label className="block text-gray-700 font-medium mb-2">
               Donation Amount (ZAR)
