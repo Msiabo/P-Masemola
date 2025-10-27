@@ -1,7 +1,7 @@
 // webhook.js
 import Stripe from "stripe";
 import { buffer } from "micro";
-import { db } from "../../firebaseAdmin"; // adjust path
+import { db } from "../firebaseAdmin"; // adjust path
 
 export const config = { api: { bodyParser: false } };
 
