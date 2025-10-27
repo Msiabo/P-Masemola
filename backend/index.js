@@ -36,7 +36,7 @@ app.use("/api/donations", donationRoutes);
 
 // Stripe webhook route (raw body required)
 app.post(
-  "/api/webhook/stripe-webhook",
+  "/api/donations/webhook",
   express.raw({ type: "application/json" }),
   webhookRoutes
 );
