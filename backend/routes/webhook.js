@@ -4,7 +4,7 @@ const { db } = require("../firebaseAdmin");
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-module.exports = async function (req, res) {
+module.exports = async (req, res) => {
   console.log("✅ Webhook received:", req.method, req.originalUrl);
 
   if (req.method !== "POST") {
@@ -12,58 +12,43 @@ module.exports = async function (req, res) {
     return res.status(405).end("Method Not Allowed");
   }
 
-  const chunks = [];
-  req.on("data", (chunk) => chunks.push(chunk));
-  req.on("end", async () => {
-    const buf = Buffer.concat(chunks);
+  try {
+    // req.body is already a Buffer because we used express.raw() in server
+    const buf = req.body;
     console.log("Buffer length:", buf.length);
 
     const sig = req.headers["stripe-signature"];
-    console.log("Stripe signature header:", sig);
-
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET);
-      console.log("✅ Stripe webhook verified:", event.type);
-    } catch (err) {
-      console.error("❌ Stripe webhook verification failed:", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
+    if (!sig) {
+      console.error("❌ Missing Stripe signature header");
+      return res.status(400).send("Missing Stripe signature");
     }
+
+    const event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    console.log("✅ Stripe webhook verified:", event.type);
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
-      console.log("Session object:", session);
+      const { metadata = {}, customer_details = {}, customer_email, amount_total, currency, payment_intent } = session;
 
-      try {
-        console.log("Checking Firebase DB reference...");
-        const ref = db.ref("donations").push();
-        console.log("Firebase ref created:", ref.key);
+      const ref = db.ref("donations").push();
+      await ref.set({
+        userId: metadata.userId || "guest",
+        name: customer_details.name || "Anonymous",
+        email: customer_email,
+        amount: amount_total / 100,
+        currency,
+        paymentId: payment_intent,
+        createdAt: Date.now(),
+      });
 
-        const { metadata = {}, customer_details = {}, customer_email, amount_total, currency, payment_intent } = session;
-
-        await ref.set({
-          userId: metadata.userId || "guest",
-          name: customer_details.name || "Anonymous",
-          email: customer_email,
-          amount: amount_total / 100,
-          currency,
-          paymentId: payment_intent,
-          createdAt: Date.now(),
-        });
-
-        console.log("✅ Donation saved to Firebase:", ref.key);
-      } catch (err) {
-        console.error("❌ Failed to save donation:", err);
-      }
+      console.log("✅ Donation saved to Firebase:", ref.key);
     } else {
-      console.log("Unhandled event type:", event.type);
+      console.log("⚠️ Unhandled event type:", event.type);
     }
 
-    res.json({ received: true });
-  });
-
-  req.on("error", (err) => {
-    console.error("❌ Request error:", err);
-    res.status(500).end();
-  });
+    res.status(200).json({ received: true });
+  } catch (err) {
+    console.error("❌ Webhook error:", err.message);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+  }
 };

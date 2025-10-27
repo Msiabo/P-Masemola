@@ -19,11 +19,11 @@ app.use(cors({
   credentials: true,
 }));
 
-// Body parser for all routes **except Stripe webhook**
+// JSON body parser for all routes **except Stripe webhook**
 app.use((req, res, next) => {
-  if (req.originalUrl === "/api/webhook/webhook") {
-    console.log("Skipping JSON parser for Stripe webhook");
-    next(); // skip parsing
+  if (req.originalUrl === "/api/donations/webhook") {
+    console.log("⏩ Skipping JSON parser for Stripe webhook");
+    next();
   } else {
     express.json()(req, res, next);
   }
@@ -44,7 +44,7 @@ app.post(
 // Test route
 app.get("/", (req, res) => res.send("Backend running ✅"));
 
-// Catch-all for errors
+// Global error handler
 app.use((err, req, res, next) => {
   console.error("❌ Server error:", err);
   res.status(500).json({ error: err.message });
