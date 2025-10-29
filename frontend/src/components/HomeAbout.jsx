@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const HomeAbout = () => {
@@ -15,7 +16,7 @@ const HomeAbout = () => {
           transition={{ duration: 0.8 }}
         >
           <img
-            src={assets.founder} // Replace with an image of the foundation or community work
+            src={assets.founder}
             alt="About P Masemola Foundation"
             className="rounded-2xl shadow-lg w-full object-cover"
           />
@@ -45,9 +46,12 @@ const HomeAbout = () => {
             that inspire growth, equality, and hope for a brighter future.
           </p>
 
-          <button className="bg-[#1AA1B3] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#17b0c7] transition-all">
+          <Link
+            to="/about"
+            className="bg-[#1AA1B3] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#17b0c7] transition-all inline-block"
+          >
             Learn More
-          </button>
+          </Link>
         </motion.div>
       </div>
     </section>

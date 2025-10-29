@@ -1,11 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const Hero = () => {
   return (
     <section
       className="relative w-full h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] flex items-center justify-center text-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${assets.heroImage})` }} // Replace with P Masemola Hero Image
+      style={{ backgroundImage: `url(${assets.heroImage})` }}
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60"></div>
@@ -20,14 +21,20 @@ const Hero = () => {
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 flex-wrap">
           {/* Get Involved Button */}
-          <button className="bg-[#1AA1B3] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#17b0c7] transition-all w-full sm:w-auto">
+          <Link
+            to="/contact"
+            className="bg-[#1AA1B3] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#17b0c7] transition-all w-full sm:w-auto text-center"
+          >
             Get Involved
-          </button>
+          </Link>
 
           {/* Donate Now Button */}
-          <button className="border-2 border-[#1AA1B3] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#1AA1B3] hover:text-white transition-all w-full sm:w-auto">
+          <Link
+            to="/donate"
+            className="border-2 border-[#1AA1B3] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#1AA1B3] hover:text-white transition-all w-full sm:w-auto text-center"
+          >
             Donate Now
-          </button>
+          </Link>
         </div>
       </div>
     </section>
